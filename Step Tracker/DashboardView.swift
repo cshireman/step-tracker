@@ -73,7 +73,7 @@ struct DashboardView: View {
                                 .foregroundStyle(Color.secondary)
                                 .lineStyle(.init(lineWidth: 1, dash: [5]))
                             
-                            ForEach(HealthMetric.mockData) { steps in
+                            ForEach(hkManager.stepData) { steps in
                                 BarMark(
                                     x: .value("Date", steps.date, unit: .day),
                                     y: .value("Steps", steps.value)
