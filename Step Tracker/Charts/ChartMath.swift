@@ -16,9 +16,11 @@ struct ChartMath {
         
         var weekdayChartData : [WeekdayChartData] = []
         for array in weekdayArray {
+            guard let firstValue = array.first else { continue }
+            
             let total = array.reduce(0.0) { $0 + $1.value }
             let average = total / Double(array.count)
-            weekdayChartData.append(.init(date: array[0].date, value: average))
+            weekdayChartData.append(.init(date: firstValue.date, value: average))
         }
 
         return weekdayChartData
