@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		837EFA142DBC29BC004E4EC4 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 837EFA132DBC29BC004E4EC4 /* Algorithms */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		83A975182DB5DF29000BCB62 /* Step Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Step Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				837EFA142DBC29BC004E4EC4 /* Algorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = "Step Tracker";
 			packageProductDependencies = (
+				837EFA132DBC29BC004E4EC4 /* Algorithms */,
 			);
 			productName = "Step Tracker";
 			productReference = 83A975182DB5DF29000BCB62 /* Step Tracker.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 83A9750F2DB5DF29000BCB62;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				837EFA122DBC29BC004E4EC4 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 83A975192DB5DF29000BCB62 /* Products */;
 			projectDirPath = "";
@@ -349,6 +358,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		837EFA122DBC29BC004E4EC4 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		837EFA132DBC29BC004E4EC4 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 837EFA122DBC29BC004E4EC4 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83A975102DB5DF29000BCB62 /* Project object */;
 }
