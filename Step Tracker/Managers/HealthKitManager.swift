@@ -82,7 +82,7 @@ import Observation
                                                                options: .mostRecent,
                                                                anchorDate: endDate,
                                                                intervalComponents: .init(day: 1))
-        
+            
         do {
             let weights = try await weightsQuery.result(for: store)
             weightDiffData = weights.statistics().map {
@@ -93,6 +93,29 @@ import Observation
         }
     }
     
+    func addStepData(for date: Date, value: Double) async {
+        let stepQuantity = HKQuantity(unit: .count(), doubleValue: value)
+        let stepSample = HKQuantitySample(type: HKQuantityType(.stepCount), quantity: stepQuantity, start: date, end: date)
+        
+        do {
+            try await store.save(stepSample)
+            print("✅ Step data added successfully!")
+        } catch {
+            print("❌ Failed to save step data: \(error)")
+        }
+    }
+
+    func addWeightData(for date: Date, value: Double) async {
+        let weightQuantity = HKQuantity(unit: .pound(), doubleValue: value)
+        let weightSample = HKQuantitySample(type: HKQuantityType(.bodyMass), quantity: weightQuantity, start: date, end: date)
+        
+        do {
+            try await store.save(weightSample)
+            print("✅ Weight data added successfully!")
+        } catch {
+            print("❌ Failed to save weight data: \(error)")
+        }
+    }
 //    func addSimulatorData() async {
 //        var mockSamples: [HKQuantitySample] = []
 //
