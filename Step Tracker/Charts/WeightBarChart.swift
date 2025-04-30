@@ -37,47 +37,51 @@ struct WeightBarChart: View {
             }
             .padding(.bottom, 12)
 
-            Chart {
-                if let selectedWeekdayData {
-                    RuleMark(x: .value("Selected Metric", selectedWeekdayData.date, unit: .day))
-                        .foregroundStyle(Color.secondary.opacity(0.3))
-                        .offset(y: -10)
-                        .annotation(position: .top,
-                                    spacing: 0,
-                                    overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                            annotationView
-                        }
-                }
-                
-                ForEach(chartData) { data in
-                    BarMark(
-                        x: .value("Date", data.date, unit: .day),
-                        y: .value("Weight Diff", data.value)
-                    )
-                    .foregroundStyle(data.value >= 0 ? Color.indigo.gradient : Color.mint.gradient)
-                }
-            }
-            .frame(height: 240)
-            .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
-            .chartYScale(domain: .automatic(includesZero: true))
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) {
-                    AxisValueLabel(format: .dateTime.weekday(.abbreviated), centered: true)
-                }
-            }
-            .chartYAxis {
-                AxisMarks { value in
-                    AxisGridLine()
-                        .foregroundStyle(Color.secondary.opacity(0.3))
+            if chartData.isEmpty {
+                ChartEmptyView(systemImageName: "chart.bar", title: "No Weight Data", description: "There is no weight data from the Health App.")
+            } else {
+                Chart {
+                    if let selectedWeekdayData {
+                        RuleMark(x: .value("Selected Metric", selectedWeekdayData.date, unit: .day))
+                            .foregroundStyle(Color.secondary.opacity(0.3))
+                            .offset(y: -10)
+                            .annotation(position: .top,
+                                        spacing: 0,
+                                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
+                                annotationView
+                            }
+                    }
                     
-                    AxisValueLabel()
+                    ForEach(chartData) { data in
+                        BarMark(
+                            x: .value("Date", data.date, unit: .day),
+                            y: .value("Weight Diff", data.value)
+                        )
+                        .foregroundStyle(data.value >= 0 ? Color.indigo.gradient : Color.mint.gradient)
+                    }
                 }
-            }
-            .sensoryFeedback(.selection, trigger: selectedDate)
-            .onChange(of: rawSelectedDate) { oldValue, newValue in
-                guard let oldValue, let newValue else { return }
-                if oldValue.weekdayInt != newValue.weekdayInt {
-                    selectedDate = newValue
+                .frame(height: 240)
+                .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
+                .chartYScale(domain: .automatic(includesZero: true))
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .day)) {
+                        AxisValueLabel(format: .dateTime.weekday(.abbreviated), centered: true)
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks { value in
+                        AxisGridLine()
+                            .foregroundStyle(Color.secondary.opacity(0.3))
+                        
+                        AxisValueLabel()
+                    }
+                }
+                .sensoryFeedback(.selection, trigger: selectedDate)
+                .onChange(of: rawSelectedDate) { oldValue, newValue in
+                    guard let oldValue, let newValue else { return }
+                    if oldValue.weekdayInt != newValue.weekdayInt {
+                        selectedDate = newValue
+                    }
                 }
             }
         }
@@ -109,5 +113,5 @@ struct WeightBarChart: View {
 }
 
 #Preview {
-    WeightBarChart(selectedStat: .weight, chartData: ChartMath.averageDailyWeightDiffs(for: MockData.weights))
+    WeightBarChart(selectedStat: .weight, chartData: ChartMath.averageDailyWeightDiffs(for: []))
 }
