@@ -80,10 +80,17 @@ struct HealthDataListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add Data") {
                         Task {
+                            guard let value = Double(valueToAdd) else {
+                                writeError = .invalidInput
+                                isShowingAlert = true
+                                valueToAdd = ""
+                                return
+                            }
+                            
                             switch metric {
                             case .steps:
                                 do {
-                                    try await hkManager.addStepData(for: addDataDate, value: Double(valueToAdd) ?? 0)
+                                    try await hkManager.addStepData(for: addDataDate, value: value)
                                     try await hkManager.fetchStepCount()
                                     isShowingAddData = false
                                 } catch STError.sharingDenied(let quantityType) {
@@ -95,7 +102,7 @@ struct HealthDataListView: View {
                                 }
                             case .weight:
                                 do {
-                                    try await hkManager.addWeightData(for: addDataDate, value: Double(valueToAdd) ?? 0)
+                                    try await hkManager.addWeightData(for: addDataDate, value: value)
                                     try await hkManager.fetchWeights()
                                     try await hkManager.fetchWeightsForDifferentials()
                                     isShowingAddData = false

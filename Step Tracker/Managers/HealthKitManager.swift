@@ -14,6 +14,7 @@ enum STError: LocalizedError {
     case noData
     case sharingDenied(quantityType: String)
     case unableToCompleteRequest
+    case invalidInput
     
     var errorDescription: String? {
         switch self {
@@ -25,6 +26,8 @@ enum STError: LocalizedError {
             "Sharing Denied for \(quantityType)"
         case .unableToCompleteRequest:
             "Unable to Complete Request"
+        case .invalidInput:
+            "Invalid Input"
         }
     }
     
@@ -38,6 +41,8 @@ enum STError: LocalizedError {
             "Please enable sharing for \(quantityType) in Settings."
         case .unableToCompleteRequest:
             "An error occurred while processing the request."
+        case .invalidInput:
+            "Must be a numeric value with a maximum of 1 decimal place."
         }
     }
 }
