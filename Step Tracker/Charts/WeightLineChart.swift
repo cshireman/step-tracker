@@ -10,6 +10,7 @@ import Charts
 
 struct WeightLineChart: View {
     @State private var rawSelectedDate: Date?
+    @State private var selectedDate: Date = .now
     
     var selectedStat: HealthMetricContext
     var chartData: [HealthMetric]
@@ -98,6 +99,12 @@ struct WeightLineChart: View {
                         .foregroundStyle(Color.secondary.opacity(0.3))
                     
                     AxisValueLabel()
+                }
+            }
+            .sensoryFeedback(.selection, trigger: selectedDate)
+            .onChange(of: rawSelectedDate) { oldValue, newValue in
+                if oldValue?.weekdayInt != newValue?.weekdayInt {
+                    selectedDate = newValue ?? .now
                 }
             }
         }
