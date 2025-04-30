@@ -13,6 +13,8 @@ struct HealthDataListView: View {
     @State private var addDataDate: Date = .now
     @State private var valueToAdd: String = ""
     
+    @Binding var isShowingPermissionPriming: Bool
+    
     var metric: HealthMetricContext
     var listData: [HealthMetric] {
         switch metric {
@@ -62,12 +64,28 @@ struct HealthDataListView: View {
                         Task {
                             switch metric {
                             case .steps:
-                                await hkManager.addStepData(for: addDataDate, value: Double(valueToAdd) ?? 0)
-                                await hkManager.fetchStepCount()
+                                do {
+                                    try await hkManager.addStepData(for: addDataDate, value: Double(valueToAdd) ?? 0)
+                                    try await hkManager.fetchStepCount()
+                                } catch STError.authNotDetermined {
+                                    isShowingPermissionPriming = true
+                                } catch STError.sharingDenied(let quantityType) {
+                                    print("❌ Sharing denied for \(quantityType)")
+                                } catch {
+                                    print("❌ Data List View unable to complete request")
+                                }
                             case .weight:
-                                await hkManager.addWeightData(for: addDataDate, value: Double(valueToAdd) ?? 0)
-                                await hkManager.fetchWeights()
-                                await hkManager.fetchWeightsForDifferentials()
+                                do {
+                                    try await hkManager.addWeightData(for: addDataDate, value: Double(valueToAdd) ?? 0)
+                                    try await hkManager.fetchWeights()
+                                    try await hkManager.fetchWeightsForDifferentials()
+                                } catch STError.authNotDetermined {
+                                    isShowingPermissionPriming = true
+                                } catch STError.sharingDenied(let quantityType) {
+                                    print("❌ Sharing denied for \(quantityType)")
+                                } catch {
+                                    print("❌ Data List View unable to complete request")
+                                }
                             }
                             
                             isShowingAddData = false
@@ -87,7 +105,8 @@ struct HealthDataListView: View {
 
 #Preview {
     NavigationStack {
-        HealthDataListView(metric: .steps)
+        HealthDataListView(isShowingPermissionPriming: .constant(false),
+                           metric: .steps)
             .environment(HealthKitManager())
     }
 }
