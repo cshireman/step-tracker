@@ -22,8 +22,9 @@ struct WeightLineChart: View {
     var avgWeight: Double {
         guard !chartData.isEmpty else { return 0 }
         let avg = chartData.reduce(0) { $0 + $1.value } / Double(chartData.count)
-        return avg
+        return avg.rounded()
     }
+    
     
     var selectedHealthMetric: HealthMetric? {
         guard let rawSelectedDate else { return nil }
@@ -31,26 +32,7 @@ struct WeightLineChart: View {
     }
     
     var body: some View {
-        VStack {
-            NavigationLink(value: selectedStat) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Label("Weight", systemImage: "figure")
-                            .font(.title3.bold())
-                            .foregroundStyle(.indigo)
-                        
-                        Text("Avg: \(avgWeight, format: .number.precision(.fractionLength(0))) lbs")
-                            .font(.caption)
-                    }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                }
-            }
-            .foregroundStyle(.secondary)
-            .padding(.bottom, 12)
-            
+        ChartContainer(title: "Weight", symbol: "figure", subtitle: "Avg: \(avgWeight) lbs", context: .weight, isNav: true) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.line.downtrend.xyaxis", title: "No Weight Data", description: "There is no weight data from the Health App.")
             } else {
@@ -112,8 +94,6 @@ struct WeightLineChart: View {
                 }
             }
         }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
     }
     
     var annotationView: some View {
