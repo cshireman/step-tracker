@@ -48,7 +48,7 @@ struct ChartContainer<Content: View>: View {
         VStack(alignment: .leading) {
             Label(title, systemImage: symbol)
                 .font(.title3.bold())
-                .foregroundStyle(context == .steps ? .pink : .indigo)
+                .foregroundStyle(context.color)
             
             Text(subtitle)
                 .font(.caption)

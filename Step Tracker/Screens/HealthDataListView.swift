@@ -23,6 +23,10 @@ struct HealthDataListView: View {
             return hkManager.stepData
         case .weight:
             return hkManager.weightData
+        case .activeEnergy:
+            return hkManager.activeEnergyData
+        case .sleep:
+            return hkManager.sleepData
         }
     }
     
@@ -113,6 +117,21 @@ struct HealthDataListView: View {
                                     writeError = .unableToCompleteRequest
                                     isShowingAlert = true
                                 }
+                            case .activeEnergy:
+                                do {
+                                    try await hkManager.addActiveEneryData(for: addDataDate, value: value)
+                                    try await hkManager.fetchActiveEnergy()
+                                    try await hkManager.fetchWeightsForDifferentials()
+                                    isShowingAddData = false
+                                } catch STError.sharingDenied(let quantityType) {
+                                    writeError = .sharingDenied(quantityType: quantityType)
+                                    isShowingAlert = true
+                                } catch {
+                                    writeError = .unableToCompleteRequest
+                                    isShowingAlert = true
+                                }
+                            default:
+                                break
                             }
                             
                             

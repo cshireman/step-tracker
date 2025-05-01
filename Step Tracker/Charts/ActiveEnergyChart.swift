@@ -1,14 +1,14 @@
 //
-//  StepBarChart.swift
+//  ActiveEnergyChart.swift
 //  Step Tracker
 //
-//  Created by Chris Shireman on 4/25/25.
+//  Created by Chris Shireman on 5/1/25.
 //
 
 import SwiftUI
 import Charts
 
-struct StepBarChart: View {
+struct ActiveEnergyChart: View {
     @State private var rawSelectedDate: Date?
     @State private var selectedDate: Date = .now
     
@@ -19,9 +19,9 @@ struct StepBarChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Steps", symbol: "figure.walk", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData))) steps", context: .steps, isNav: true) {
+        ChartContainer(title: "Energy", symbol: "figure.run", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData))) calories", context: .activeEnergy, isNav: true) {
             if chartData.isEmpty {
-                ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no step data from the Health App.")
+                ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no active energy data from the Health App.")
             } else {
                 Chart {
                     if let selectedData {
@@ -32,7 +32,7 @@ struct StepBarChart: View {
                                         spacing: 0,
                                         overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                                 ChartAnnotationView(data: selectedData,
-                                                    context: .steps)
+                                                    context: .activeEnergy)
                             }
                     }
                     
@@ -40,13 +40,13 @@ struct StepBarChart: View {
                         .foregroundStyle(Color.secondary)
                         .lineStyle(.init(lineWidth: 1, dash: [5]))
                     
-                    ForEach(chartData) { steps in
+                    ForEach(chartData) { activity in
                         BarMark(
-                            x: .value("Date", steps.date, unit: .day),
-                            y: .value("Steps", steps.value)
+                            x: .value("Date", activity.date, unit: .day),
+                            y: .value("Activity", activity.value)
                         )
-                        .foregroundStyle(Color.pink.gradient)
-                        .opacity(rawSelectedDate == nil || steps.date == selectedData?.date ? 1 : 0.3)
+                        .foregroundStyle(Color.orange.gradient)
+                        .opacity(rawSelectedDate == nil || activity.date == selectedData?.date ? 1 : 0.3)
                     }
                 }
                 .frame(height: 150)
@@ -77,5 +77,5 @@ struct StepBarChart: View {
 }
 
 #Preview {
-    StepBarChart(chartData: [])
+    ActiveEnergyChart(chartData: [])
 }
