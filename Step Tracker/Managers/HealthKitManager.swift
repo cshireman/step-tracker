@@ -34,7 +34,7 @@ enum STError: LocalizedError {
     var failureReason: String? {
         switch self {
         case .authNotDetermined:
-            "Ypu have not given access to your Health data.  Please go to Settings > Health > Data Access & Devices."
+            "You have not given access to your Health data.  Please go to Settings > Health > Data Access & Devices."
         case .noData:
             "No data available for the selected date range."
         case .sharingDenied(let quantityType):
@@ -212,9 +212,6 @@ enum STError: LocalizedError {
         // Dictionary to hold sleep data by date
         var sleepDataByDate: [Date: [String: TimeInterval]] = [:]
         
-        // Calendar for date components
-        let calendar = Calendar.current
-        
         // Process each sample
         for sample in samples {
             let date = sample.startDate.startOfDay
@@ -391,8 +388,6 @@ enum STError: LocalizedError {
     }
     
     func addSimulatorSleepData() async {
-        let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis)!
-        
         // Generate 28 days of sleep data
         for day in 0..<28 {
             // Start date is X days ago from now
@@ -423,12 +418,10 @@ enum STError: LocalizedError {
         // Define stage proportions (vary slightly based on the day)
         let deepSleepProportion = 0.15 + variation
         let remSleepProportion = abs(0.25 - variation)
-        let lightSleepProportion = 0.60
         
         // Calculate durations
         let deepSleepDuration = totalDuration * deepSleepProportion
         let remSleepDuration = totalDuration * remSleepProportion
-        let lightSleepDuration = totalDuration * lightSleepProportion
         
         // Current tracking time
         var currentTime = startDate

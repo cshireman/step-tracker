@@ -19,21 +19,14 @@ struct SleepBarChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Sleep Score", symbol: "bed.double", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData)))", context: .sleep, isNav: false) {
+        let config = ChartContainerConfiguration(title: "Sleep Score", symbol: "bed.double", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData)))", context: .sleep, isNav: false)
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no sleep data from the Health App.")
             } else {
                 Chart {
                     if let selectedData {
-                        RuleMark(x: .value("Selected Metric", selectedData.date, unit: .day))
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                            .offset(y: -10)
-                            .annotation(position: .top,
-                                        spacing: 0,
-                                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                                ChartAnnotationView(data: selectedData,
-                                                    context: .sleep)
-                            }
+                        ChartAnnotationView(data: selectedData, context: .sleep)
                     }
                     
                     RuleMark(y: .value("Average", ChartHelper.averageValue(for: chartData)))

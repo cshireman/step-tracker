@@ -24,7 +24,8 @@ struct SleepPieChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .sleep, isNav: false) {
+        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .sleep, isNav: false)
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.pie", title: "No Data", description: "There is no sleep data from the Health App.")
             } else {

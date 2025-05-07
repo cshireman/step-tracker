@@ -19,22 +19,17 @@ struct WeightBarChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Average Weight Change", symbol: "figure", subtitle: "Per Weekday (Last 28 Days)", context: .weight, isNav: false) {
+        let config = ChartContainerConfiguration(title: "Average Weight Change", symbol: "figure", subtitle: "Per Weekday (Last 28 Days)", context: .weight, isNav: false)
+        
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.bar", title: "No Weight Data", description: "There is no weight data from the Health App.")
             } else {
                 Chart {
                     if let selectedWeekdayData {
-                        RuleMark(x: .value("Selected Metric", selectedWeekdayData.date, unit: .day))
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                            .offset(y: -10)
-                            .annotation(position: .top,
-                                        spacing: 0,
-                                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                                ChartAnnotationView(data: selectedWeekdayData,
-                                                    context: .weight,
-                                                    precision: 2)
-                            }
+                        ChartAnnotationView(data: selectedWeekdayData,
+                                            context: .weight,
+                                            precision: 2)
                     }
                     
                     ForEach(chartData) { data in

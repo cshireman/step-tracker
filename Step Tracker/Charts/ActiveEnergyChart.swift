@@ -19,21 +19,14 @@ struct ActiveEnergyChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Energy", symbol: "figure.run", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData))) calories", context: .activeEnergy, isNav: true) {
+        let config = ChartContainerConfiguration(title: "Energy", symbol: "figure.run", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData))) calories", context: .activeEnergy, isNav: true)
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no active energy data from the Health App.")
             } else {
                 Chart {
                     if let selectedData {
-                        RuleMark(x: .value("Selected Metric", selectedData.date, unit: .day))
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                            .offset(y: -10)
-                            .annotation(position: .top,
-                                        spacing: 0,
-                                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                                ChartAnnotationView(data: selectedData,
-                                                    context: .activeEnergy)
-                            }
+                        ChartAnnotationView(data: selectedData, context: .activeEnergy)
                     }
                     
                     RuleMark(y: .value("Average", ChartHelper.averageValue(for: chartData)))

@@ -30,22 +30,16 @@ struct WeightLineChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Weight", symbol: "figure", subtitle: "Avg: \(avgWeight) lbs", context: .weight, isNav: true) {
+        let config = ChartContainerConfiguration(title: "Weight", symbol: "figure", subtitle: "Avg: \(avgWeight) lbs", context: .weight, isNav: true)
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.line.downtrend.xyaxis", title: "No Weight Data", description: "There is no weight data from the Health App.")
             } else {
                 Chart {
                     if let selectedData {
-                        RuleMark(x: .value("Selected Metric", selectedData.date, unit: .day))
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                            .offset(y: -10)
-                            .annotation(position: .top,
-                                        spacing: 0,
-                                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                                ChartAnnotationView(data: selectedData,
-                                                    context: .weight,
-                                                    precision: 1)
-                            }
+                        ChartAnnotationView(data: selectedData,
+                                            context: .weight,
+                                            precision: 1)
                     }
                     
                     RuleMark(y: .value("Goal", 155))

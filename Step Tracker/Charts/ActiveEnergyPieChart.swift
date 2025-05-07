@@ -24,7 +24,8 @@ struct ActiveEnergyPieChart: View {
     }
     
     var body: some View {
-        ChartContainer(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .activeEnergy, isNav: false) {
+        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .activeEnergy, isNav: false)
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.pie", title: "No Data", description: "There is no active energy data from the Health App.")
             } else {
