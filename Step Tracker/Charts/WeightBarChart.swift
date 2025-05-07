@@ -12,44 +12,24 @@ struct WeightBarChart: View {
     @State private var rawSelectedDate: Date?
     @State private var selectedDate: Date = .now
     
-    var selectedStat: HealthMetricContext
-    var chartData: [WeekdayChartData]
+    var chartData: [DateValueChartData]
     
-    var selectedWeekdayData: WeekdayChartData? {
-        guard let rawSelectedDate else { return nil }
-        return chartData.first { Calendar.current.isDate($0.date, inSameDayAs: rawSelectedDate) }
+    var selectedWeekdayData: DateValueChartData? {
+        ChartHelper.parseSelectedData(from: chartData, in: rawSelectedDate)
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                VStack(alignment: .leading) {
-                    Label("Average Weight Change", systemImage: "figure")
-                        .font(.title3.bold())
-                        .foregroundStyle(.indigo)
-                    
-                    Text("Per Weekday (Last 28 Days)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Spacer()
-            }
-            .padding(.bottom, 12)
-
+        let config = ChartContainerConfiguration(title: "Average Weight Change", symbol: "figure", subtitle: "Per Weekday (Last 28 Days)", context: .weight, isNav: false)
+        
+        ChartContainer(config: config) {
             if chartData.isEmpty {
                 ChartEmptyView(systemImageName: "chart.bar", title: "No Weight Data", description: "There is no weight data from the Health App.")
             } else {
                 Chart {
                     if let selectedWeekdayData {
-                        RuleMark(x: .value("Selected Metric", selectedWeekdayData.date, unit: .day))
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                            .offset(y: -10)
-                            .annotation(position: .top,
-                                        spacing: 0,
-                                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                                annotationView
-                            }
+                        ChartAnnotationView(data: selectedWeekdayData,
+                                            context: .weight,
+                                            precision: 2)
                     }
                     
                     ForEach(chartData) { data in
@@ -85,33 +65,9 @@ struct WeightBarChart: View {
                 }
             }
         }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
-    }
-    
-    var annotationView: some View {
-        VStack(alignment: .leading) {
-            Text(selectedWeekdayData?.date ?? .now, format: .dateTime.weekday(.wide))
-                .font(.footnote.bold())
-                .foregroundStyle(.secondary)
-            
-            let sign = self.selectedWeekdayData?.value ?? 0 < 0 ? "" : "+"
-            HStack(spacing: 0) {
-                Text(sign)
-                Text(selectedWeekdayData?.value ?? 0, format: .number.precision(.fractionLength(2)))
-            }
-            .fontWeight(.heavy)
-            .foregroundStyle(self.selectedWeekdayData?.value ?? 0 < 0 ? .mint : .indigo)
-        }
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 4)
-                .fill(Color(.secondarySystemBackground))
-                .shadow(color: .secondary.opacity(0.3), radius: 2, x: 2, y: 2)
-        )
     }
 }
 
 #Preview {
-    WeightBarChart(selectedStat: .weight, chartData: ChartMath.averageDailyWeightDiffs(for: []))
+    WeightBarChart(chartData: ChartMath.averageDailyWeightDiffs(for: []))
 }

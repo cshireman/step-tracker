@@ -15,4 +15,12 @@ extension Date {
     var weekdayTitle: String {
         self.formatted(.dateTime.weekday(.wide))
     }
+    
+    var endOfDay: Date {
+        Calendar.current.dateInterval(of: .day, for: self)!.end
+    }
+    
+    var startOfDay: Date {
+        Calendar.current.dateInterval(of: .day, for: self)!.start
+    }
 }

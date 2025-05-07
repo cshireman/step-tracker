@@ -1,14 +1,14 @@
 //
-//  StepPieChart.swift
+//  SleepPieChart.swift
 //  Step Tracker
 //
-//  Created by Chris Shireman on 4/25/25.
+//  Created by Chris Shireman on 5/1/25.
 //
 
 import SwiftUI
 import Charts
 
-struct StepPieChart: View {
+struct SleepPieChart: View {
     @State private var rawSelectedChartValue: Double? = 0
     @State private var selectedDay: Date?
     
@@ -24,19 +24,19 @@ struct StepPieChart: View {
     }
     
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .steps, isNav: false)
+        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .sleep, isNav: false)
         ChartContainer(config: config) {
             if chartData.isEmpty {
-                ChartEmptyView(systemImageName: "chart.pie", title: "No Data", description: "There is no step data from the Health App.")
+                ChartEmptyView(systemImageName: "chart.pie", title: "No Data", description: "There is no sleep data from the Health App.")
             } else {
                 Chart {
                     ForEach(chartData) { weekday in
-                        SectorMark(angle: .value("Average Steps", weekday.value),
+                        SectorMark(angle: .value("Average Sleep Score", weekday.value),
                                    innerRadius: .ratio(0.618),
                                    outerRadius: selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 140 : 110,
                                    angularInset: 1
                         )
-                        .foregroundStyle(.pink.gradient)
+                        .foregroundStyle(.blue.gradient)
                         .cornerRadius(6)
                         .opacity(selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 1 : 0.3)
                     }
@@ -77,5 +77,5 @@ struct StepPieChart: View {
 }
 
 #Preview {
-    StepPieChart(chartData: ChartMath.averageWeekdayCount(for: []))
+    SleepPieChart(chartData: ChartMath.averageWeekdayCount(for: []))
 }
