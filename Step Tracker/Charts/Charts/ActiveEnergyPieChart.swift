@@ -24,8 +24,7 @@ struct ActiveEnergyPieChart: View {
     }
     
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .activeEnergy, isNav: false)
-        ChartContainer(config: config) {
+        ChartContainer(chartType: .activityWeekdayPie) {
             Chart {
                 ForEach(chartData) { weekday in
                     SectorMark(angle: .value("Average Activity", weekday.value),

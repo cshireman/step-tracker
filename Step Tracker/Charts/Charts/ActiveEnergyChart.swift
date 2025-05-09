@@ -23,8 +23,7 @@ struct ActiveEnergyChart: View {
     }
     
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Energy", symbol: "figure.run", subtitle: "Avg: \(averageEnergy.formatted()) calories", context: .activeEnergy, isNav: true)
-        ChartContainer(config: config) {
+        ChartContainer(chartType: .activityBar(average: averageEnergy)) {
             Chart {
                 if let selectedData {
                     ChartAnnotationView(data: selectedData, context: .activeEnergy)

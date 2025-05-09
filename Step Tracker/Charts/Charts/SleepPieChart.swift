@@ -24,8 +24,7 @@ struct SleepPieChart: View {
     }
     
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .sleep, isNav: false)
-        ChartContainer(config: config) {
+        ChartContainer(chartType: .sleepWeekdayPie) {
             Chart {
                 ForEach(chartData) { weekday in
                     SectorMark(angle: .value("Average Sleep Score", weekday.value),

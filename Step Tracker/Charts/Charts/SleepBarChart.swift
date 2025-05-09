@@ -23,8 +23,7 @@ struct SleepBarChart: View {
     }
     
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Sleep Score", symbol: "bed.double", subtitle: "Avg: \(averageSleep.formatted())", context: .sleep, isNav: false)
-        ChartContainer(config: config) {
+        ChartContainer(chartType: .sleepBar(average: averageSleep)) {
             Chart {
                 if let selectedData {
                     ChartAnnotationView(data: selectedData, context: .sleep)
