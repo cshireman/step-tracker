@@ -18,44 +18,51 @@ struct ActiveEnergyChart: View {
         ChartHelper.parseSelectedData(from: chartData, in: rawSelectedDate)
     }
     
+    var averageEnergy: Int {
+        Int(chartData.map { $0.value}.average)
+    }
+    
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Energy", symbol: "figure.run", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData))) calories", context: .activeEnergy, isNav: true)
+        let config = ChartContainerConfiguration(title: "Energy", symbol: "figure.run", subtitle: "Avg: \(averageEnergy.formatted()) calories", context: .activeEnergy, isNav: true)
         ChartContainer(config: config) {
-            if chartData.isEmpty {
-                ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no active energy data from the Health App.")
-            } else {
-                Chart {
-                    if let selectedData {
-                        ChartAnnotationView(data: selectedData, context: .activeEnergy)
-                    }
-                    
-                    RuleMark(y: .value("Average", ChartHelper.averageValue(for: chartData)))
+            Chart {
+                if let selectedData {
+                    ChartAnnotationView(data: selectedData, context: .activeEnergy)
+                }
+                
+                if !chartData.isEmpty {
+                    RuleMark(y: .value("Average", chartData.map { $0.value}.average))
                         .foregroundStyle(Color.secondary)
                         .lineStyle(.init(lineWidth: 1, dash: [5]))
+                }
+                
+                ForEach(chartData) { activity in
+                    BarMark(
+                        x: .value("Date", activity.date, unit: .day),
+                        y: .value("Activity", activity.value)
+                    )
+                    .foregroundStyle(Color.orange.gradient)
+                    .opacity(rawSelectedDate == nil || activity.date == selectedData?.date ? 1 : 0.3)
+                }
+            }
+            .frame(height: 150)
+            .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
+            .chartXAxis {
+                AxisMarks {
+                    AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
+                }
+            }
+            .chartYAxis {
+                AxisMarks { value in
+                    AxisGridLine()
+                        .foregroundStyle(Color.secondary.opacity(0.3))
                     
-                    ForEach(chartData) { activity in
-                        BarMark(
-                            x: .value("Date", activity.date, unit: .day),
-                            y: .value("Activity", activity.value)
-                        )
-                        .foregroundStyle(Color.orange.gradient)
-                        .opacity(rawSelectedDate == nil || activity.date == selectedData?.date ? 1 : 0.3)
-                    }
+                    AxisValueLabel((value.as(Double.self) ?? 0).formatted(.number.notation(.compactName)))
                 }
-                .frame(height: 150)
-                .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
-                .chartXAxis {
-                    AxisMarks {
-                        AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                        
-                        AxisValueLabel((value.as(Double.self) ?? 0).formatted(.number.notation(.compactName)))
-                    }
+            }
+            .overlay {
+                if chartData.isEmpty {
+                    ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no active energy data from the Health App.")
                 }
             }
         }

@@ -18,44 +18,51 @@ struct SleepBarChart: View {
         ChartHelper.parseSelectedData(from: chartData, in: rawSelectedDate)
     }
     
+    var averageSleep: Int {
+        Int(chartData.map { $0.value}.average)
+    }
+    
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Sleep Score", symbol: "bed.double", subtitle: "Avg: \(Int(ChartHelper.averageValue(for: chartData)))", context: .sleep, isNav: false)
+        let config = ChartContainerConfiguration(title: "Sleep Score", symbol: "bed.double", subtitle: "Avg: \(averageSleep.formatted())", context: .sleep, isNav: false)
         ChartContainer(config: config) {
-            if chartData.isEmpty {
-                ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no sleep data from the Health App.")
-            } else {
-                Chart {
-                    if let selectedData {
-                        ChartAnnotationView(data: selectedData, context: .sleep)
-                    }
-                    
-                    RuleMark(y: .value("Average", ChartHelper.averageValue(for: chartData)))
+            Chart {
+                if let selectedData {
+                    ChartAnnotationView(data: selectedData, context: .sleep)
+                }
+                
+                if !chartData.isEmpty {
+                    RuleMark(y: .value("Average", chartData.map { $0.value}.average))
                         .foregroundStyle(Color.secondary)
                         .lineStyle(.init(lineWidth: 1, dash: [5]))
+                }
+                
+                ForEach(chartData) { sleepScore in
+                    BarMark(
+                        x: .value("Date", sleepScore.date, unit: .day),
+                        y: .value("Sleep Score", sleepScore.value)
+                    )
+                    .foregroundStyle(Color.blue.gradient)
+                    .opacity(rawSelectedDate == nil || sleepScore.date == selectedData?.date ? 1 : 0.3)
+                }
+            }
+            .frame(height: 150)
+            .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
+            .chartXAxis {
+                AxisMarks {
+                    AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
+                }
+            }
+            .chartYAxis {
+                AxisMarks { value in
+                    AxisGridLine()
+                        .foregroundStyle(Color.secondary.opacity(0.3))
                     
-                    ForEach(chartData) { sleepScore in
-                        BarMark(
-                            x: .value("Date", sleepScore.date, unit: .day),
-                            y: .value("Sleep Score", sleepScore.value)
-                        )
-                        .foregroundStyle(Color.blue.gradient)
-                        .opacity(rawSelectedDate == nil || sleepScore.date == selectedData?.date ? 1 : 0.3)
-                    }
+                    AxisValueLabel((value.as(Double.self) ?? 0).formatted(.number.notation(.compactName)))
                 }
-                .frame(height: 150)
-                .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
-                .chartXAxis {
-                    AxisMarks {
-                        AxisValueLabel(format: .dateTime.month(.defaultDigits).day())
-                    }
-                }
-                .chartYAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                            .foregroundStyle(Color.secondary.opacity(0.3))
-                        
-                        AxisValueLabel((value.as(Double.self) ?? 0).formatted(.number.notation(.compactName)))
-                    }
+            }
+            .overlay {
+                if chartData.isEmpty {
+                    ChartEmptyView(systemImageName: "chart.bar", title: "No Data", description: "There is no sleep data from the Health App.")
                 }
             }
         }
