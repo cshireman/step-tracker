@@ -71,5 +71,5 @@ struct WeightBarChart: View {
 }
 
 #Preview {
-    WeightBarChart(chartData: ChartMath.averageDailyWeightDiffs(for: []))
+    WeightBarChart(chartData: ChartHelper.averageDailyWeightDiffs(for: []))
 }

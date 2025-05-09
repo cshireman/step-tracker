@@ -31,16 +31,16 @@ struct DashboardView: View {
                     switch selectedStat {
                     case .steps:
                         StepBarChart(chartData: ChartHelper.convert(data: hkManager.stepData))
-                        StepPieChart(chartData: ChartMath.averageWeekdayCount(for: hkManager.stepData))
+                        StepPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkManager.stepData))
                     case .weight:
                         WeightLineChart(chartData: ChartHelper.convert(data: hkManager.weightData))
-                        WeightBarChart(chartData: ChartMath.averageDailyWeightDiffs(for: hkManager.weightDiffData))
+                        WeightBarChart(chartData: ChartHelper.averageDailyWeightDiffs(for: hkManager.weightDiffData))
                     case .activeEnergy:
                         ActiveEnergyChart(chartData: ChartHelper.convert(data: hkManager.activeEnergyData))
-                        ActiveEnergyPieChart(chartData: ChartMath.averageWeekdayCount(for: hkManager.activeEnergyData))
+                        ActiveEnergyPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkManager.activeEnergyData))
                     case .sleep:
                         SleepBarChart(chartData: ChartHelper.convert(data: hkManager.sleepData))
-                        SleepPieChart(chartData: ChartMath.averageWeekdayCount(for: hkManager.sleepData))
+                        SleepPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkManager.sleepData))
                     }
                 }
                 .padding()

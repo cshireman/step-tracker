@@ -1,14 +1,14 @@
 //
-//  ActiveEnergyPieChar.swift
+//  StepPieChart.swift
 //  Step Tracker
 //
-//  Created by Chris Shireman on 5/1/25.
+//  Created by Chris Shireman on 4/25/25.
 //
 
 import SwiftUI
 import Charts
 
-struct ActiveEnergyPieChart: View {
+struct StepPieChart: View {
     @State private var rawSelectedChartValue: Double? = 0
     @State private var lastSelectedValue: Double = 0
     @State private var selectedDay: Date?
@@ -24,16 +24,16 @@ struct ActiveEnergyPieChart: View {
     }
     
     var body: some View {
-        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .activeEnergy, isNav: false)
+        let config = ChartContainerConfiguration(title: "Averages", symbol: "calendar", subtitle: "Last 28 Days", context: .steps, isNav: false)
         ChartContainer(config: config) {
             Chart {
                 ForEach(chartData) { weekday in
-                    SectorMark(angle: .value("Average Activity", weekday.value),
+                    SectorMark(angle: .value("Average Steps", weekday.value),
                                innerRadius: .ratio(0.618),
                                outerRadius: selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 140 : 110,
                                angularInset: 1
                     )
-                    .foregroundStyle(.orange.gradient)
+                    .foregroundStyle(.pink.gradient)
                     .cornerRadius(6)
                     .opacity(selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 1 : 0.3)
                 }
@@ -70,6 +70,11 @@ struct ActiveEnergyPieChart: View {
                     }
                 }
             }
+            .overlay {
+                if chartData.isEmpty {
+                    ChartEmptyView(systemImageName: "chart.pie", title: "No Data", description: "There is no step data from the Health App.")
+                }
+            }
             .sensoryFeedback(.selection, trigger: selectedDay)
             .onChange(of: selectedWeekday) { oldValue, newValue in
                 guard let oldValue, let newValue else { return }
@@ -77,15 +82,11 @@ struct ActiveEnergyPieChart: View {
                     selectedDay = newValue.date
                 }
             }
-            .overlay {
-                if chartData.isEmpty {
-                    ChartEmptyView(systemImageName: "chart.pie", title: "No Data", description: "There is no active energy data from the Health App.")
-                }
-            }
+            
         }
     }
 }
 
 #Preview {
-    StepPieChart(chartData: ChartMath.averageWeekdayCount(for: []))
+    StepPieChart(chartData: ChartHelper.averageWeekdayCount(for: MockData.steps))
 }
