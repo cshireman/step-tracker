@@ -8,42 +8,6 @@
 import SwiftUI
 import Charts
 
-enum HealthMetricContext: CaseIterable, Identifiable {
-    case steps, weight, activeEnergy, sleep
-
-    var id: Self { self }
-    
-    var title: String {
-        switch self {
-        case .steps:
-            return "Steps"
-        case .weight:
-            return "Weight"
-        case .activeEnergy:
-            return "Activity"
-        case .sleep:
-            return "Sleep"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .steps:
-            return .pink
-        case .weight:
-            return .indigo
-        case .activeEnergy:
-            return .orange
-        case .sleep:
-            return .blue
-        }
-    }
-    
-    var negativeColor: Color {
-        return .mint
-    }
-}
-
 struct DashboardView: View {
     @Environment(HealthKitManager.self) private var hkManager
     
@@ -52,8 +16,6 @@ struct DashboardView: View {
     @State private var isShowingAlert: Bool = false
     
     @State private var fetchError: STError = .noData
-    
-    var isSteps: Bool { selectedStat == .steps }
     
     var body: some View {
         NavigationStack {
@@ -84,30 +46,15 @@ struct DashboardView: View {
                 .padding()
             }
             .padding()
-            .task {
-                do {
-                    try await hkManager.fetchActiveEnergy()
-                    try await hkManager.fetchStepCount()
-                    try await hkManager.fetchWeights()
-                    try await hkManager.fetchWeightsForDifferentials()
-                    try await hkManager.fetchSleep()
-                } catch STError.authNotDetermined {
-                    isShowingPermissionPrimingSheet = true
-                } catch STError.noData {
-                    fetchError = .noData
-                    isShowingAlert = true
-                } catch {
-                    fetchError = .unableToCompleteRequest
-                    isShowingAlert = true
-                }
-                
+            .onAppear {
+                fetchHealthData()
             }
             .navigationTitle("Dashboard")
             .navigationDestination(for: HealthMetricContext.self) { metric in
                 HealthDataListView(metric: metric)
             }
             .sheet(isPresented: $isShowingPermissionPrimingSheet) {
-                //fetch health data
+                fetchHealthData()
             } content: {
                 HealthKitPermissionPrimingView()
             }
@@ -118,9 +65,34 @@ struct DashboardView: View {
             }
 
         }
-        .tint(isSteps ? .pink : .indigo)
+        .tint(selectedStat == .steps ? .pink : .indigo)
     }
 
+    private func fetchHealthData() {
+        Task {
+            do {
+                async let steps = hkManager.fetchStepCount()
+                async let weights = hkManager.fetchWeights(daysBack: 28)
+                async let weightDiffs = hkManager.fetchWeights(daysBack: 29)
+                async let activeEnergy = hkManager.fetchActiveEnergy()
+                async let sleep = hkManager.fetchSleep()
+                
+                try await hkManager.stepData = steps
+                try await hkManager.weightData = weights
+                try await hkManager.weightDiffData = weightDiffs
+                try await hkManager.activeEnergyData = activeEnergy
+                try await hkManager.sleepData = sleep
+            } catch STError.authNotDetermined {
+                isShowingPermissionPrimingSheet = true
+            } catch STError.noData {
+                fetchError = .noData
+                isShowingAlert = true
+            } catch {
+                fetchError = .unableToCompleteRequest
+                isShowingAlert = true
+            }
+        }
+    }
 }
 
 #Preview {

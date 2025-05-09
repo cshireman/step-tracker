@@ -50,26 +50,8 @@ struct HealthKitPermissionPrimingView: View {
                                  shareTypes: hkManager.types,
                                  readTypes: hkManager.types,
                                  trigger: isShowingHealthKitPermissions) { result in
-            switch result {
-            case .success:
-                Task {
-                    do {
-                        try await hkManager.fetchActiveEnergy()
-                        try await hkManager.fetchStepCount()
-                        try await hkManager.fetchWeights()
-                        try await hkManager.fetchWeightsForDifferentials()
-                        try await hkManager.fetchSleep()
-                    } catch {
-                        
-                    }
-                }
-                dismiss()
-                break
-            case .failure:
-                //handle error
-                dismiss()
-                break
-            }
+            
+            dismiss()
         }
     }
 }

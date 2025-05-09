@@ -83,59 +83,7 @@ struct HealthDataListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add Data") {
-                        Task {
-                            guard let value = Double(valueToAdd) else {
-                                writeError = .invalidInput
-                                isShowingAlert = true
-                                valueToAdd = ""
-                                return
-                            }
-                            
-                            switch metric {
-                            case .steps:
-                                do {
-                                    try await hkManager.addStepData(for: addDataDate, value: value)
-                                    try await hkManager.fetchStepCount()
-                                    isShowingAddData = false
-                                } catch STError.sharingDenied(let quantityType) {
-                                    writeError = .sharingDenied(quantityType: quantityType)
-                                    isShowingAlert = true
-                                } catch {
-                                    writeError = .unableToCompleteRequest
-                                    isShowingAlert = true
-                                }
-                            case .weight:
-                                do {
-                                    try await hkManager.addWeightData(for: addDataDate, value: value)
-                                    try await hkManager.fetchWeights()
-                                    try await hkManager.fetchWeightsForDifferentials()
-                                    isShowingAddData = false
-                                } catch STError.sharingDenied(let quantityType) {
-                                    writeError = .sharingDenied(quantityType: quantityType)
-                                    isShowingAlert = true
-                                } catch {
-                                    writeError = .unableToCompleteRequest
-                                    isShowingAlert = true
-                                }
-                            case .activeEnergy:
-                                do {
-                                    try await hkManager.addActiveEneryData(for: addDataDate, value: value)
-                                    try await hkManager.fetchActiveEnergy()
-                                    try await hkManager.fetchWeightsForDifferentials()
-                                    isShowingAddData = false
-                                } catch STError.sharingDenied(let quantityType) {
-                                    writeError = .sharingDenied(quantityType: quantityType)
-                                    isShowingAlert = true
-                                } catch {
-                                    writeError = .unableToCompleteRequest
-                                    isShowingAlert = true
-                                }
-                            default:
-                                break
-                            }
-                            
-                            
-                        }
+                        saveValue()
                     }
                 }
                 
@@ -144,6 +92,48 @@ struct HealthDataListView: View {
                         isShowingAddData = false
                     }
                 }
+            }
+        }
+    }
+    
+    private func saveValue() {
+        Task {
+            guard let value = Double(valueToAdd) else {
+                writeError = .invalidInput
+                isShowingAlert = true
+                valueToAdd = ""
+                return
+            }
+            
+            do {
+                switch metric {
+                case .steps:
+                    try await hkManager.addStepData(for: addDataDate, value: value)
+                    
+                    async let stepCount = hkManager.fetchStepCount()
+                    try await hkManager.stepData = stepCount
+                case .weight:
+                    try await hkManager.addWeightData(for: addDataDate, value: value)
+                    async let weights = hkManager.fetchWeights(daysBack: 28)
+                    async let weightDiffs = hkManager.fetchWeights(daysBack: 29)
+                    
+                    try await hkManager.weightData = weights
+                    try await hkManager.weightDiffData = weightDiffs
+                case .activeEnergy:
+                    try await hkManager.addActiveEneryData(for: addDataDate, value: value)
+                    async let activeEnergy = hkManager.fetchActiveEnergy()
+                    try await hkManager.activeEnergyData = activeEnergy
+                default:
+                    break
+                }
+                
+                isShowingAddData = false
+            } catch STError.sharingDenied(let quantityType) {
+                writeError = .sharingDenied(quantityType: quantityType)
+                isShowingAlert = true
+            } catch {
+                writeError = .unableToCompleteRequest
+                isShowingAlert = true
             }
         }
     }
