@@ -73,14 +73,14 @@ struct ChartContainer<Content: View>: View {
     
     var context: HealthMetricContext {
         switch chartType {
-        case .stepBar(_):
+        case .stepBar(_), .stepWeekdayPie:
             return .steps
-        case .weightLine(_):
+        case .weightLine(_), .weightDiffBar:
             return .weight
-        case .activityBar(_):
+        case .activityBar(_), .activityWeekdayPie:
             return .activeEnergy
-        default:
-            return .steps
+        case .sleepBar(_), .sleepWeekdayPie:
+            return .sleep
         }
     }
     
