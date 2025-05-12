@@ -33,15 +33,20 @@ struct ActiveEnergyChart: View {
                     RuleMark(y: .value("Average", chartData.map { $0.value}.average))
                         .foregroundStyle(Color.secondary)
                         .lineStyle(.init(lineWidth: 1, dash: [5]))
+                        .accessibilityHidden(true)
                 }
                 
                 ForEach(chartData) { activity in
-                    BarMark(
-                        x: .value("Date", activity.date, unit: .day),
-                        y: .value("Activity", activity.value)
-                    )
-                    .foregroundStyle(Color.orange.gradient)
-                    .opacity(rawSelectedDate == nil || activity.date == selectedData?.date ? 1 : 0.3)
+                    Plot {
+                        BarMark(
+                            x: .value("Date", activity.date, unit: .day),
+                            y: .value("Activity", activity.value)
+                        )
+                        .foregroundStyle(Color.orange.gradient)
+                        .opacity(rawSelectedDate == nil || activity.date == selectedData?.date ? 1 : 0.3)
+                    }
+                    .accessibilityLabel(activity.date.accessibilityDate)
+                    .accessibilityValue("\(Int(activity.value)) calories")
                 }
             }
             .frame(height: 150)

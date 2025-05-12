@@ -33,15 +33,20 @@ struct SleepBarChart: View {
                     RuleMark(y: .value("Average", chartData.map { $0.value}.average))
                         .foregroundStyle(Color.secondary)
                         .lineStyle(.init(lineWidth: 1, dash: [5]))
+                        .accessibilityHidden(true)
                 }
                 
                 ForEach(chartData) { sleepScore in
-                    BarMark(
-                        x: .value("Date", sleepScore.date, unit: .day),
-                        y: .value("Sleep Score", sleepScore.value)
-                    )
-                    .foregroundStyle(Color.blue.gradient)
-                    .opacity(rawSelectedDate == nil || sleepScore.date == selectedData?.date ? 1 : 0.3)
+                    Plot {
+                        BarMark(
+                            x: .value("Date", sleepScore.date, unit: .day),
+                            y: .value("Sleep Score", sleepScore.value)
+                        )
+                        .foregroundStyle(Color.blue.gradient)
+                        .opacity(rawSelectedDate == nil || sleepScore.date == selectedData?.date ? 1 : 0.3)
+                    }
+                    .accessibilityLabel(sleepScore.date.accessibilityDate)
+                    .accessibilityValue("\(Int(sleepScore.value))")
                 }
             }
             .frame(height: 150)

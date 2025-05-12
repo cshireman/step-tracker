@@ -35,6 +35,8 @@ struct ActiveEnergyPieChart: View {
                     .foregroundStyle(.orange.gradient)
                     .cornerRadius(6)
                     .opacity(selectedWeekday?.date.weekdayInt == weekday.date.weekdayInt ? 1 : 0.3)
+                    .accessibilityLabel(weekday.date.weekdayTitle)
+                    .accessibilityValue("\(Int(weekday.value)) calories")
                 }
             }
             .chartAngleSelection(value: $rawSelectedChartValue)
@@ -65,6 +67,7 @@ struct ActiveEnergyPieChart: View {
                                     .contentTransition(.numericText())
                             }
                             .position(x: frame.midX, y: frame.midY)
+                            .accessibilityHidden(true)
                         }
                     }
                 }

@@ -28,11 +28,15 @@ struct WeightBarChart: View {
                 }
                 
                 ForEach(chartData) { data in
-                    BarMark(
-                        x: .value("Date", data.date, unit: .day),
-                        y: .value("Weight Diff", data.value)
-                    )
-                    .foregroundStyle(data.value >= 0 ? Color.indigo.gradient : Color.mint.gradient)
+                    Plot {
+                        BarMark(
+                            x: .value("Date", data.date, unit: .day),
+                            y: .value("Weight Diff", data.value)
+                        )
+                        .foregroundStyle(data.value >= 0 ? Color.indigo.gradient : Color.mint.gradient)
+                    }
+                    .accessibilityLabel(data.date.weekdayTitle)
+                    .accessibilityValue("\(data.value.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always()))) pounds")
                 }
             }
             .frame(height: 240)
