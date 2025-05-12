@@ -23,4 +23,8 @@ extension Date {
     var startOfDay: Date {
         Calendar.current.dateInterval(of: .day, for: self)!.start
     }
+    
+    var accessibilityDate: String {
+        self.formatted(.dateTime.month(.wide).day())
+    }
 }
