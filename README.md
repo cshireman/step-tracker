@@ -11,24 +11,24 @@ Step Tracker is an iOS portfolio application that integrates with Apple HealthKi
 - **Trend Analysis**: Identify patterns in your activity with weekly and monthly trend analysis
 - **Sleep Analysis**: Analyse your sleep patterns to spot trends in your sleep scores
 
+## Demo Video
+![Demo](Resources/demo.gif){width=300px}
+
 ## Screenshots
 ### Steps Dashboard
-![Steps Dashboard](Resources/dashboard-steps.png)
+![Steps Dashboard](Resources/dashboard-steps.png){width=300px}
 
 ### Weight Dashboard
-![Weight Dashboard](Resources/dashboard-weight.png)
+![Weight Dashboard](Resources/dashboard-weight.png){width=300px}
 
 ### Activity Dashboard
-![Activity Dashboard](Resources/dashboard-activity.png)
+![Activity Dashboard](Resources/dashboard-activity.png){width=300px}
 
 ### Steps List View
-![Steps List View](Resources/list-steps.png)
+![Steps List View](Resources/list-steps.png){width=300px}
 
 ### Add Custom Data
-![Add Custom Data](Resources/add-data-steps.png)
-
-## Demo Video
-![Demo](Resources/demo.gif)
+![Add Custom Data](Resources/add-data-steps.png){width=300px}
 
 ## Technologies Used
 - Swift
