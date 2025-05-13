@@ -49,7 +49,9 @@ struct HealthKitPermissionPrimingView: View {
                                  readTypes: hkManager.types,
                                  trigger: isShowingHealthKitPermissions) { result in
             
-            dismiss()
+            Task { @MainActor in
+                dismiss()
+            }
         }
     }
 }

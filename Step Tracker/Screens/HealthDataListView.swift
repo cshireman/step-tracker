@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HealthDataListView: View {
     @Environment(HealthKitManager.self) private var hkManager
+    @Environment(HealthKitData.self) private var hkData
+    
     @State private var isShowingAddData: Bool = false
     @State private var addDataDate: Date = .now
     @State private var valueToAdd: String = ""
@@ -20,13 +22,13 @@ struct HealthDataListView: View {
     var listData: [HealthMetric] {
         switch metric {
         case .steps:
-            return hkManager.stepData
+            return hkData.stepData
         case .weight:
-            return hkManager.weightData
+            return hkData.weightData
         case .activeEnergy:
-            return hkManager.activeEnergyData
+            return hkData.activeEnergyData
         case .sleep:
-            return hkManager.sleepData
+            return hkData.sleepData
         }
     }
     
@@ -113,18 +115,18 @@ struct HealthDataListView: View {
                     try await hkManager.addStepData(for: addDataDate, value: value)
                     
                     async let stepCount = hkManager.fetchStepCount()
-                    try await hkManager.stepData = stepCount
+                    try await hkData.stepData = stepCount
                 case .weight:
                     try await hkManager.addWeightData(for: addDataDate, value: value)
                     async let weights = hkManager.fetchWeights(daysBack: 28)
                     async let weightDiffs = hkManager.fetchWeights(daysBack: 29)
                     
-                    try await hkManager.weightData = weights
-                    try await hkManager.weightDiffData = weightDiffs
+                    try await hkData.weightData = weights
+                    try await hkData.weightDiffData = weightDiffs
                 case .activeEnergy:
                     try await hkManager.addActiveEneryData(for: addDataDate, value: value)
                     async let activeEnergy = hkManager.fetchActiveEnergy()
-                    try await hkManager.activeEnergyData = activeEnergy
+                    try await hkData.activeEnergyData = activeEnergy
                 default:
                     break
                 }

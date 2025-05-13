@@ -9,7 +9,16 @@ import Foundation
 import HealthKit
 import Observation
 
-@Observable class HealthKitManager {
+@Observable @MainActor
+final class HealthKitData: Sendable {
+    var activeEnergyData: [HealthMetric] = []
+    var stepData: [HealthMetric] = []
+    var weightData: [HealthMetric] = []
+    var weightDiffData: [HealthMetric] = []
+    var sleepData: [HealthMetric] = []
+}
+
+@Observable final class HealthKitManager: Sendable {
     let store = HKHealthStore()
     
     let types: Set = [
@@ -18,13 +27,6 @@ import Observation
         HKQuantityType(.activeEnergyBurned),
         HKCategoryType(.sleepAnalysis)
     ]
-    
-    var activeEnergyData: [HealthMetric] = []
-    var stepData: [HealthMetric] = []
-    var weightData: [HealthMetric] = []
-    var weightDiffData: [HealthMetric] = []
-    var sleepData: [HealthMetric] = []
-    
     
     /// Fetch last 28 days of step count from HealthKit
     /// - Returns: Array of ``HealthMetric``
