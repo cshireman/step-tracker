@@ -90,3 +90,5 @@ fastlane/test_output
 iOSInjectionProject/
 Step Tracker.xcodeproj/project.xcworkspace/contents.xcworkspacedata
 Step Tracker/.DS_Store
+Step Tracker/Charts/.DS_Store
+.DS_Store
