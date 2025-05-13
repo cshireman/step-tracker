@@ -10,6 +10,7 @@ import Charts
 
 struct DashboardView: View {
     @Environment(HealthKitManager.self) private var hkManager
+    @Environment(HealthKitData.self) private var hkData
     
     @State private var selectedStat: HealthMetricContext = .steps
     @State private var isShowingPermissionPrimingSheet: Bool = false
@@ -30,17 +31,17 @@ struct DashboardView: View {
                     
                     switch selectedStat {
                     case .steps:
-                        StepBarChart(chartData: ChartHelper.convert(data: hkManager.stepData))
-                        StepPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkManager.stepData))
+                        StepBarChart(chartData: ChartHelper.convert(data: hkData.stepData))
+                        StepPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkData.stepData))
                     case .weight:
-                        WeightLineChart(chartData: ChartHelper.convert(data: hkManager.weightData))
-                        WeightBarChart(chartData: ChartHelper.averageDailyWeightDiffs(for: hkManager.weightDiffData))
+                        WeightLineChart(chartData: ChartHelper.convert(data: hkData.weightData))
+                        WeightBarChart(chartData: ChartHelper.averageDailyWeightDiffs(for: hkData.weightDiffData))
                     case .activeEnergy:
-                        ActiveEnergyChart(chartData: ChartHelper.convert(data: hkManager.activeEnergyData))
-                        ActiveEnergyPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkManager.activeEnergyData))
+                        ActiveEnergyChart(chartData: ChartHelper.convert(data: hkData.activeEnergyData))
+                        ActiveEnergyPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkData.activeEnergyData))
                     case .sleep:
-                        SleepBarChart(chartData: ChartHelper.convert(data: hkManager.sleepData))
-                        SleepPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkManager.sleepData))
+                        SleepBarChart(chartData: ChartHelper.convert(data: hkData.sleepData))
+                        SleepPieChart(chartData: ChartHelper.averageWeekdayCount(for: hkData.sleepData))
                     }
                 }
                 .padding()
@@ -77,11 +78,11 @@ struct DashboardView: View {
                 async let activeEnergy = hkManager.fetchActiveEnergy()
                 async let sleep = hkManager.fetchSleep()
                 
-                try await hkManager.stepData = steps
-                try await hkManager.weightData = weights
-                try await hkManager.weightDiffData = weightDiffs
-                try await hkManager.activeEnergyData = activeEnergy
-                try await hkManager.sleepData = sleep
+                try await hkData.stepData = steps
+                try await hkData.weightData = weights
+                try await hkData.weightDiffData = weightDiffs
+                try await hkData.activeEnergyData = activeEnergy
+                try await hkData.sleepData = sleep
             } catch STError.authNotDetermined {
                 isShowingPermissionPrimingSheet = true
             } catch STError.noData {
