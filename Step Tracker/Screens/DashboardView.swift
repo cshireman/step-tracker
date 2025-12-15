@@ -17,7 +17,11 @@ struct DashboardView: View {
     @State private var isShowingAlert: Bool = false
     
     @State private var fetchError: STError = .noData
-    
+
+    var backgroundColor: Color {
+        selectedStat.color
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -46,11 +50,10 @@ struct DashboardView: View {
                 }
                 .padding()
             }
-            .padding()
-            .onAppear {
-                fetchHealthData()
-            }
+            .onAppear { fetchHealthData() }
             .navigationTitle("Dashboard")
+            .toolbarTitleDisplayMode(.inlineLarge)
+            .background(LinearGradient(colors: [backgroundColor.opacity(0.25), .clear], startPoint: .topLeading, endPoint: .bottomTrailing))
             .navigationDestination(for: HealthMetricContext.self) { metric in
                 HealthDataListView(metric: metric)
             }
@@ -100,4 +103,5 @@ struct DashboardView: View {
 #Preview {
     DashboardView()
         .environment(HealthKitManager())
+        .environment(HealthKitData())
 }

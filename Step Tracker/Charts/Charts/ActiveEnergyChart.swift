@@ -42,6 +42,7 @@ struct ActiveEnergyChart: View {
                             x: .value("Date", activity.date, unit: .day),
                             y: .value("Activity", activity.value)
                         )
+                        .cornerRadius(3)
                         .foregroundStyle(Color.orange.gradient)
                         .opacity(rawSelectedDate == nil || activity.date == selectedData?.date ? 1 : 0.3)
                     }

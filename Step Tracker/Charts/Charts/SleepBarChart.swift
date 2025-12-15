@@ -42,6 +42,7 @@ struct SleepBarChart: View {
                             x: .value("Date", sleepScore.date, unit: .day),
                             y: .value("Sleep Score", sleepScore.value)
                         )
+                        .cornerRadius(3)
                         .foregroundStyle(Color.blue.gradient)
                         .opacity(rawSelectedDate == nil || sleepScore.date == selectedData?.date ? 1 : 0.3)
                     }
