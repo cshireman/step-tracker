@@ -119,7 +119,7 @@ struct ChartContainer<Content: View>: View {
         case .weightLine(_), .weightDiffBar:
             "figure"
         case .activityBar(_):
-            "figure.running"
+            "figure.run"
         case .stepWeekdayPie, .activityWeekdayPie, .sleepWeekdayPie:
             "calendar"
         case .sleepBar(_):
