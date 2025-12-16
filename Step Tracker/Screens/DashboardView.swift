@@ -76,6 +76,17 @@ struct DashboardView: View {
             } message: { fetchError in
                 Text(fetchError.failureReason ?? "")
             }
+            .toolbar {
+                if #available(iOS 26, *) {
+                    if DataAnalyzer.shared.model.isAvailable {
+                        ToolbarItem {
+                            Button("Analyze Data", systemImage: "apple.intelligence") {
+                                //call LLM
+                            }
+                        }
+                    }
+                }
+            }
 
         }
         .tint(navbarTint)
