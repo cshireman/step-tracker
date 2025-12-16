@@ -9,7 +9,7 @@ import Foundation
 import HealthKit
 import Observation
 
-@Observable @MainActor
+@Observable
 final class HealthKitData: Sendable {
     var activeEnergyData: [HealthMetric] = []
     var stepData: [HealthMetric] = []
