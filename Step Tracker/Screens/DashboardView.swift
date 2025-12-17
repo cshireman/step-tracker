@@ -81,7 +81,9 @@ struct DashboardView: View {
                     if DataAnalyzer.shared.model.isAvailable {
                         ToolbarItem {
                             Button("Analyze Data", systemImage: "apple.intelligence") {
-                                //call LLM
+                                Task {
+                                    await DataAnalyzer.shared.analyzeHealthData()
+                                }
                             }
                         }
                     }
